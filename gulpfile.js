@@ -8,11 +8,17 @@ var gulp = require('gulp'),
     sourcemaps = require('gulp-sourcemaps'),
     sass = require('gulp-sass'),
     cleanCSS = require('gulp-clean-css'),
+
     imagemin = require('gulp-imagemin'),
-    pngquant = require('imagemin-pngquant'),
+    imageminPngquant = require('imagemin-pngquant'),
+    imageminZopfli = require('imagemin-zopfli'),
+    imageminMozjpeg = require('imagemin-mozjpeg'),
+    imageminGiflossy = require('imagemin-giflossy'),
+    
     rimraf = require('rimraf'),
     browserSync = require("browser-sync"),
     reload = browserSync.reload;
+
 
 var path = {
     vendor: {
@@ -103,17 +109,54 @@ gulp.task('css:build', function () {
         .pipe(reload({stream: true}));
 });
 
-gulp.task('image:build', function () {
-    gulp.src(path.app.img)                       // Выберем картинки
-        .pipe(imagemin({                         // Сожмем их
-            progressive: true,
-            svgoPlugins: [{removeViewBox: false}],
-            use: [pngquant()],
-            interlaced: true
-        }))
-        .pipe(gulp.dest(path.dist.img))          // Перекинем готовые файлы в build
+// gulp.task('image:build', function () {
+//     gulp.src(path.app.img)                       // Выберем картинки
+//         .pipe(imagemin({                         // Сожмем их
+//             progressive: true,
+//             svgoPlugins: [{removeViewBox: false}],
+//             use: [pngquant()],
+//             interlaced: true
+//         }))
+//         .pipe(gulp.dest(path.dist.img))          // Перекинем готовые файлы в build
+//         .pipe(reload({stream: true}));
+// });
+
+gulp.task("image:build", () => {
+     gulp.src(path.app.img)
+        .pipe(imagemin([
+            imageminGiflossy({
+                optimizationLevel: 3,
+                optimize: 3,
+                lossy: 2
+            }),
+            imageminPngquant({
+                speed: 5,
+                quality: [0.6, 0.8]
+            }),
+            imageminZopfli({
+                more: true
+            }),
+            imageminMozjpeg({
+                progressive: true,
+                quality: 90
+            }),
+            imagemin.svgo({
+                plugins: [
+                    { removeViewBox: false },
+                    { removeUnusedNS: false },
+                    { removeUselessStrokeAndFill: false },
+                    { cleanupIDs: false },
+                    { removeComments: true },
+                    { removeEmptyAttrs: true },
+                    { removeEmptyText: true },
+                    { collapseGroups: true }
+                ]
+            })
+        ]))
+        .pipe(gulp.dest(path.dist.img))
         .pipe(reload({stream: true}));
 });
+
 
 gulp.task('fonts:build', function() {
     gulp.src(path.app.fonts)
