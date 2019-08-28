@@ -5,7 +5,7 @@
 
 3. npm init
 
-4. on package.json add 
+4. in package.json add 
 "dependencies": {
     "browser-sync": "^2.2.3",
     "gulp": "latest",
@@ -43,7 +43,7 @@ or
 
 5. npm i
 
-6. on bower.json add 
+6. in bower.json add 
 	"overrides": {
   	  "bootstrap": {
         	"main": [
