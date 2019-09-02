@@ -1,7 +1,7 @@
 
-1. CMD >> bower init
+1. bower init
 
-2. install Boostrap 4 & jQuery with --save
+2. install devDepencies
 
 3. npm init
 
@@ -21,7 +21,7 @@
     "rimraf": "^2.3.1"
   }
 
-or 
+OR 
 
 "dependencies": {
     "browser-sync": "latest",
